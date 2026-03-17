@@ -121,7 +121,15 @@ def get_db():
         db.close()
 
 # Auth Dependencies
-
+def get_current_user(token:str = Depends(oauth2_scheme), db:Session = Depends(get_db)):
+    token_data = verify_token(token)
+    user = db.query(User).filter(User.email == token_data.email).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail = "User does not exist",
+            headers = {"WWW-Authenticate":"Bearer"}
+        )
 
 
 # Endpoints (www.zerotoknowing.com/)
