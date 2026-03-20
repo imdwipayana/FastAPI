@@ -205,6 +205,11 @@ def verify_token_endpoint(current_user: User = Depends(get_current_active_user))
         }
     }
 
+@app.get("/users/", response_model=List[UserResponse])
+def get_users(current_user:User = Depends(get_current_active_user), db: Session = Depends(get_db)):
+    """Get allusers"""
+    return db.query(User).all()
+
 @app.get("/users/{user_id}",response_model=UserResponse)
 def get_user(user_id:int, db:Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
